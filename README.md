@@ -1,2 +1,2 @@
 # SO_Project
-Operations Systems about semaphores.
+Progetto per il corso di Sistemi Operativi. Implementazione dei semafori in disastrOS. Realizzato da Daniele Iacomini e Daniele Cantisani.
