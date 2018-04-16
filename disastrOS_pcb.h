@@ -32,7 +32,7 @@ typedef struct PCB{
 
   // descriptors for semaphores
   int last_sem_fd;
-  ListHead sem_descriptors;
+  ListHead sem_descriptors;    //CI SERVIRA 
   
   //we are really rude :) the stack is INSIDE the pcb
   //forgive me for the bestiality
@@ -47,8 +47,8 @@ typedef struct PCB{
 
   // we use long int so we can store pointers on 64 bit machines
   int syscall_num;
-  long int syscall_args[DSOS_MAX_SYSCALLS_ARGS]; 
-  int syscall_retvalue;
+  long int syscall_args[DSOS_MAX_SYSCALLS_ARGS];    //CI SERVIRA, running -> syscall_args[0] e [1] - AGGIORNAMENTO
+  int syscall_retvalue;   
 } PCB;
 
 // initializes the memory allocation

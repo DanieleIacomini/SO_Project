@@ -61,6 +61,9 @@ SemDescriptor*  SemDescriptorList_byFd(ListHead* l, int fd){
   return 0;
 }
 
+
+//AGGIUNTA FUNZIONE DI RICERCA?? SEMAFORI GIà UTILIZZATI
+
 SemDescriptorPtr* SemDescriptorPtr_alloc(SemDescriptor* descriptor) {
   SemDescriptorPtr* d=PoolAllocator_getBlock(&_sem_descriptor_ptr_allocator);
   if (!d)
