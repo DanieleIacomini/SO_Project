@@ -146,6 +146,10 @@ void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){
   Timer_init();
   Resource_init();
   Descriptor_init();
+  
+  //BISOGNA AGGIUNGERE LE DUE FUNZIONI
+  
+  
   init_pcb=0;
 
   // populate the vector of syscalls and number of arguments for each syscall
@@ -327,3 +331,6 @@ void disastrOS_printStatus(){
   PCBList_print(&zombie_list);
   printf("\n***********************************************\n\n");
 };
+
+
+//IMPLEMENTARE LE QUATTRO FUNZIONI

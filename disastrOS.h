@@ -28,6 +28,9 @@ void disastrOS_preempt();
 void disastrOS_spawn(void (*f)(void*), void* args );
 void disastrOS_shutdown();
 
+
+//DICHIARAZIONE FUNZIONI
+
 // timers
 void disastrOS_sleep(int);
 
