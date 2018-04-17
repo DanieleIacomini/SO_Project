@@ -12,7 +12,7 @@ typedef struct {
   ListHead waiting_descriptors;
 } Semaphore;
 
-void Semaphore_init();   //IMPORTANTE!!! FUNZIONE IMPORTANTE DA INSERIRE PIU TARDI ALTRIMENTI DA SEGMENTATION
+void Semaphore_init();  
 
 Semaphore* Semaphore_alloc(int id, int type);
 int Semaphore_free(Semaphore* semaphore);

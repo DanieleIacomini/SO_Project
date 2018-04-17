@@ -20,7 +20,7 @@ typedef struct SemDescriptorPtr{
   SemDescriptor* descriptor;
 } SemDescriptorPtr;
 
-void SemDescriptor_init();   //FUNZIONE DA AGGIUNGERE ALLA _START ALTRIMENTI SEGMENTATION  AGGIORNAMENTO
+void SemDescriptor_init();
 SemDescriptor* SemDescriptor_alloc(int fd, Semaphore* res, PCB* pcb);
 int SemDescriptor_free(SemDescriptor* d);
 SemDescriptor*  SemDescriptorList_byFd(ListHead* l, int fd);
