@@ -1,3 +1,4 @@
+
 #pragma once
 
 #define MAX_NUM_PROCESSES 1024
@@ -28,6 +29,10 @@
 #define DSOS_ERESOURCENOFD -11
 #define DSOS_ERESOURCECLOSE -12
 #define DSOS_ERESOURCEINUSE -13
+
+
+//!!BISOFNA AGGIUNGERE I MESSAGGI D ERRORE!!//
+
 
 // syscall numbers
 #define DSOS_MAX_SYSCALLS 32
