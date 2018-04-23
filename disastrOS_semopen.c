@@ -18,12 +18,6 @@ void internal_semOpen(){
 
   Semaphore* sem = SemaphoreList_byId(&semaphores_list, id);  	//Cerco il semaforo in semaphores_list con il suo ID.
 
-
-  if (value < 0){   			//Semaforo già in uso
-	 //running->syscall_retvalue = MESS ERRORE
-  }
-
-
   if(!sem){
 	  sem = Semaphore_alloc(id, value);   			//Se il semaforo non esiste in semaphores_list, lo alloco.
 	  }
@@ -32,7 +26,11 @@ void internal_semOpen(){
 		  return;
 		  }
 
-	List_insert(&semaphores_list, semaphores_list.last, (ListItem*) sem);   //Aggiungo il semaforo a semaphores_list
+  if (value < 0){   			//Semaforo già in uso
+    	 //running->syscall_retvalue = MESS ERRORE
+  }
+
+  List_insert(&semaphores_list, semaphores_list.last, (ListItem*) sem);   //Aggiungo il semaforo a semaphores_list
 
 
 
@@ -47,7 +45,8 @@ void internal_semOpen(){
 
 	running->last_sem_fd++;  //Aggiorno il valore di last_sem_fd per il prossimo semaforo.
 
-	List_insert(&running->sem_descriptors, running->sem_descriptors.last, (ListItem*) sem_desc);  //Aggiungo il descrittore allocato alla lista dei descrittori Sem_descriptors
+	List_insert(&running->sem_descriptors, running->sem_descriptors.last, (ListItem*) sem_desc);
+    //Aggiungo il descrittore allocato alla lista dei descrittori Sem_descriptors
 
 
 
@@ -56,12 +55,6 @@ void internal_semOpen(){
 		//Mess Errore
 		return;
 					}
-
-	sem_descptr->descriptor = sem_desc;  //Aggiungo il descrittore sem_desc nella struttura di sem_descptr
-
-
-	List_insert(&sem, sem->descriptors.last, sem_descptr);  //Aggiungo alla ListHead Descriptors di sem il descrittore ptr.
-
 
 
 	running->syscall_retvalue = sem_desc->fd;   //Restituisco l' fd del descrittore sem_desc che si riferisce al nostro semaforo.
