@@ -56,6 +56,12 @@ void internal_semOpen(){
 		return;
 					}
 
+	sem_descptr->descriptor = sem_desc;  //Aggiungo il descrittore sem_desc nella struttura di sem_descptr
+
+
+	List_insert(&sem, sem->descriptors.last, sem_descptr);  //Aggiungo alla ListHead Descriptors di sem il descrittore ptr.
+
+
 
 	running->syscall_retvalue = sem_desc->fd;   //Restituisco l' fd del descrittore sem_desc che si riferisce al nostro semaforo.
 	return;

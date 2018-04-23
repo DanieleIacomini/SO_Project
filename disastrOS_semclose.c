@@ -14,7 +14,8 @@ void internal_semClose(){
 	  int check;									//Variabile per controllo errori
 	  int fd = running->syscall_args[0];    		//Argomento sem_close
 
-	  SemDescriptor* sem_desc = SemDescriptorList_byFd(&semaphores_list, fd); //Cerco il SemDescriptor tramite il suo fd
+	  SemDescriptor* sem_desc = SemDescriptorList_byFd(&semaphores_list, fd);
+		 //Cerco il SemDescriptor tramite il suo fd
 	  if(!sem_desc){//MESS ERRORE
 	  }
 
@@ -39,7 +40,8 @@ void internal_semClose(){
 
 
 
-	  List_detach(&sem->descriptors, (ListItem*) sem_descptr);  //Elimino dalla lista dei descrittori del semaforo il riferimento a SemDescriptorPtr
+	  List_detach(&sem->descriptors, (ListItem*) sem_descptr);
+		//Elimino dalla lista dei descrittori del semaforo il riferimento a SemDescriptorPtr
 
 	  check = SemDescriptorPtr_free(sem_descptr);				//Rilascio le risorse del Sem_DescriptorPTR
 	  if(!check){//MESS ERRORE
