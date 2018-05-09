@@ -6,6 +6,10 @@
 #include "disastrOS_semaphore.h"
 #include "disastrOS_semdescriptor.h"
 
+#include "linked_list.h"			//aggiungo il file linked_list.h per le funzioni Insert e Detach
+#include "disastrOS_globals.h"     //aggiungo il file globals.h per le variabili globali , tra le quali semaphores_list
+#include "disastrOS_constants.h"	//aggiungo il file constants.h per i messaggi di errore
+
 void internal_semWait(){
   int fd = running -> syscall_args[0];
   SemDescriptor* des = SemDescriptorList_byFd(&running -> sem_descriptors,fd);
