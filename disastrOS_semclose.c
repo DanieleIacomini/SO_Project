@@ -5,16 +5,20 @@
 #include "disastrOS_syscalls.h"
 #include "disastrOS_semaphore.h"
 #include "disastrOS_semdescriptor.h"
-#include "disastrOS_globals.h"     //aggiungo il file globals.h per le variabili globali , tra le quali semaphores_list
-#include "disastrOS_constants.h"	//aggiungo il file constants.h per i messaggi di errore
-#include "linked_list.h"				//per la List_Detach
+//#include "disastrOS_globals.h"     //aggiungo il file globals.h per le variabili globali , tra le quali semaphores_list
+//#include "disastrOS_constants.h"	//aggiungo il file constants.h per i messaggi di errore
+
 
 
 void internal_semClose(){
-	  int check;									//Variabile per controllo errori
+	  									
 	  int fd = running->syscall_args[0];    		//Argomento sem_close
+	  
+	  int check;		//Variabile per controllo errori
+	  
+	  
 
-	  SemDescriptor* sem_desc = SemDescriptorList_byFd(&semaphores_list, fd);
+	  SemDescriptor* sem_desc = SemDescriptorList_byFd(&running->sem_descriptors, fd);
 		 //Cerco il SemDescriptor tramite il suo fd
 	  if(!sem_desc){
 			running -> syscall_retvalue = DSOS_SEMNOTFD;
@@ -41,7 +45,7 @@ void internal_semClose(){
 			running -> syscall_retvalue = DSOS_SEMNOTFREE;
 	  }
 
- List_detach(&sem->descriptors, (ListItem*) sem_descptr);
+   List_detach(&sem->descriptors, (ListItem*) sem_descptr);
 		//Elimino dalla lista dei descrittori del semaforo il riferimento a SemDescriptorPtr
 
 	  check = SemDescriptorPtr_free(sem_descptr);				//Rilascio le risorse del Sem_DescriptorPTR
@@ -49,7 +53,7 @@ void internal_semClose(){
 			running -> syscall_retvalue = DSOS_SEMNOTFREE;
 	  }
 
-	  if((sem->descriptors).size ==  0){ //!! && (sem->waiting_descriptors).size == 0){ DA RICONTROLLARE
+	  if((sem->descriptors).size ==  0 && (sem->waiting_descriptors).size == 0){ 
 		   List_detach(&semaphores_list,(ListItem*)sem);
 			check = Semaphore_free(sem);						//Rilascio le risorse del Semaforo solo se non ci sono più descrittori associati
 			 if(!check){

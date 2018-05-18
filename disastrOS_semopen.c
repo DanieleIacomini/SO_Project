@@ -6,7 +6,7 @@
 #include "disastrOS_semaphore.h"
 #include "disastrOS_semdescriptor.h"
 
-#include "linked_list.h"			//aggiungo il file linked_list.h per le funzioni Insert e Detach
+
 #include "disastrOS_globals.h"     //aggiungo il file globals.h per le variabili globali , tra le quali semaphores_list
 #include "disastrOS_constants.h"	//aggiungo il file constants.h per i messaggi di errore
 
@@ -26,7 +26,7 @@ void internal_semOpen(){
 		  return;
 		  }
 
-  if (value < 0){   			//Semaforo già in uso
+  if (value < 0){   			//Semaforo con valore minore di zero
     	 running->syscall_retvalue = DSOS_SEMWRONGVALUE;
   }
 
@@ -41,11 +41,13 @@ void internal_semOpen(){
     running->syscall_retvalue = DSOS_SEMNOTALLOC;
 		return;
 	}
+	
+	List_insert(&running->sem_descriptors, running->sem_descriptors.last, (ListItem*) sem_desc);
+    //Aggiungo il descrittore allocato alla lista dei descrittori Sem_descriptors
 
 	running->last_sem_fd++;  //Aggiorno il valore di last_sem_fd per il prossimo semaforo.
 
-	List_insert(&running->sem_descriptors, running->sem_descriptors.last, (ListItem*) sem_desc);
-    //Aggiungo il descrittore allocato alla lista dei descrittori Sem_descriptors
+	
 
 
 
@@ -55,7 +57,7 @@ void internal_semOpen(){
 		return;
 					}
 
-	sem_descptr->descriptor = sem_desc;  //Aggiungo il descrittore sem_desc nella struttura di sem_descptr
+	sem_desc->ptr = sem_descptr;  //Aggiungo il descrittore sem_desc nella struttura di sem_descptr
 
 
 	List_insert(&sem->descriptors, sem->descriptors.last,(ListItem*) sem_descptr);  //Aggiungo alla ListHead Descriptors di sem il descrittore ptr.
