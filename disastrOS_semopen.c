@@ -57,7 +57,7 @@ void internal_semOpen(){
 		return;
 					}
 
-	sem_desc->ptr = sem_descptr;  //Aggiungo il descrittore sem_desc nella struttura di sem_descptr
+	sem_desc->ptr = sem_descptr;  //Aggiungo al ptr di sem_desc il sem_desptr appena allocato
 
 
 	List_insert(&sem->descriptors, sem->descriptors.last,(ListItem*) sem_descptr);  //Aggiungo alla ListHead Descriptors di sem il descrittore ptr.
