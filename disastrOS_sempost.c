@@ -24,10 +24,11 @@ void internal_semPost(){
   if(sem->count <= 0) {
     List_insert(&ready_list, ready_list.last, (ListItem*) running);
     des_ptr = (SemDescriptorPtr*)List_detach(&sem->waiting_descriptors, (ListItem*) sem->waiting_descriptors.first);
-    List_insert(&sem->descriptors, sem->descriptors.last, (ListItem*) proc_desptr);
-    List_detach(&waiting_list, (ListItem*) proc_desptr->descriptor->pcb);
+    List_insert(&sem->descriptors, sem->descriptors.last, (ListItem*) des_ptr);
+    List_detach(&waiting_list, (ListItem*) des_ptr->descriptor->pcb);
     running->status = Ready;
-    running = proc_desptr->descriptor->pcb;
+    running =des_ptr->descriptor->pcb;
+    
   }
 
 }
