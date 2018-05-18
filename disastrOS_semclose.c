@@ -16,17 +16,20 @@ void internal_semClose(){
 
 	  SemDescriptor* sem_desc = SemDescriptorList_byFd(&semaphores_list, fd);
 		 //Cerco il SemDescriptor tramite il suo fd
-	  if(!sem_desc){//MESS ERRORE
+	  if(!sem_desc){
+			running -> syscall_retvalue = DSOS_SEMNOTFD;
 	  }
 
 
 
 	  Semaphore* sem = sem_desc-> semaphore; 			//Prendo il semaforo corrispondente al descrittore Sem_Desc
-	  if(!sem){ //MESS ERRORE
+	  if(!sem){
+			running -> syscall_retvalue = DSOS_SEMNOTSEM;
 	  }
 
 	  SemDescriptorPtr* sem_descptr = sem_desc->ptr;   //Riferimento
-	  if(!sem_descptr){//MESS ERRORE
+	  if(!sem_descptr){
+			running -> syscall_retvalue = DSOS_SEMNOTDESPTR;
 	  }
 
 
@@ -34,32 +37,27 @@ void internal_semClose(){
 	  List_detach(&running->sem_descriptors, (ListItem*) sem_desc); //Elimino il descrittore dalla lista del processo
 
 	  check = SemDescriptor_free(sem_desc);						//Rilascio le risorse del Sem_Descriptor
-	  if(!check){//MESS ERRORE
+	  if(!check){
+			running -> syscall_retvalue = DSOS_SEMNOTFREE;
 	  }
 
-
-
-
-	  List_detach(&sem->descriptors, (ListItem*) sem_descptr);
+ List_detach(&sem->descriptors, (ListItem*) sem_descptr);
 		//Elimino dalla lista dei descrittori del semaforo il riferimento a SemDescriptorPtr
 
 	  check = SemDescriptorPtr_free(sem_descptr);				//Rilascio le risorse del Sem_DescriptorPTR
-	  if(!check){//MESS ERRORE
+	  if(!check) {
+			running -> syscall_retvalue = DSOS_SEMNOTFREE;
 	  }
 
 	  if((sem->descriptors).size ==  0){ //!! && (sem->waiting_descriptors).size == 0){ DA RICONTROLLARE
 		   List_detach(&semaphores_list,(ListItem*)sem);
 			check = Semaphore_free(sem);						//Rilascio le risorse del Semaforo solo se non ci sono più descrittori associati
-			 if(!check){//MESS ERRORE
-
+			 if(!check){
+				 running -> syscall_retvalue = DSOS_SEMNOTFREE;
 				}
 	  }
 
 
     running->syscall_retvalue = 0;    //RESTITUISCO 0 nella syscall_retvalue
 	return;
-
-
-
-
 }

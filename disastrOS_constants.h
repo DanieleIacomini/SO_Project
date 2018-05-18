@@ -29,10 +29,12 @@
 #define DSOS_ERESOURCENOFD -11
 #define DSOS_ERESOURCECLOSE -12
 #define DSOS_ERESOURCEINUSE -13
-
-
-//!!BISOFNA AGGIUNGERE I MESSAGGI D ERRORE!!//
-
+#define DSOS_SEMNOTFD -14  //messaggio d'erroe per la funzione Sem_descriptorByFd
+#define DSOS_SEMNOTDESPTR -15 //messaggio d'errore per sem_des_ptr(allocazione e struttura non trovata)
+#define DSOS_SEMNOTALLOC -16 //messaggio d'errore nella Sem_Descriptor_alloc
+#define DSOS_SEMNOTSEM -17 //messaggio d'errore in sem_desc->semaphore non c'è semaphore
+#define DSOS_SEMWRONGVALUE -18  //messaggio d'errore per evitare che il semaphore venga aperto con valore <0
+#define DSOS_SEMNOTFREE -19 //messaggio d'errore errore free
 
 // syscall numbers
 #define DSOS_MAX_SYSCALLS 32

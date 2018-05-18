@@ -22,12 +22,12 @@ void internal_semOpen(){
 	  sem = Semaphore_alloc(id, value);   			//Se il semaforo non esiste in semaphores_list, lo alloco.
 	  }
 	  if(!sem){
-		  //ERRORE ALLOCAZIONE CON MESSAGGIO DI ERRORE
+      running -> syscall_retvalue = DSOS_SEMNOTALLOC;
 		  return;
 		  }
 
   if (value < 0){   			//Semaforo già in uso
-    	 //running->syscall_retvalue = MESS ERRORE
+    	 running->syscall_retvalue = DSOS_SEMWRONGVALUE;
   }
 
   List_insert(&semaphores_list, semaphores_list.last, (ListItem*) sem);   //Aggiungo il semaforo a semaphores_list
@@ -38,8 +38,7 @@ void internal_semOpen(){
 
 	SemDescriptor* sem_desc = SemDescriptor_alloc(fd, sem, running);  //Alloco il SemDescriptor che si rifersce a sem
 	if(!sem_desc){
-
-		//running->syscall_retvalue = Mess Errore
+    running->syscall_retvalue = DSOS_SEMNOTALLOC;
 		return;
 	}
 
@@ -52,14 +51,14 @@ void internal_semOpen(){
 
 	SemDescriptorPtr* sem_descptr = SemDescriptorPtr_alloc(sem_desc);  //Alloco il SemDescriptorPtr per le risorse
 	if(!sem_descptr){
-		//Mess Errore
+		running -> syscall_retvalue = DSOS_SEMNOTDESPTR;
 		return;
 					}
 
 	sem_descptr->descriptor = sem_desc;  //Aggiungo il descrittore sem_desc nella struttura di sem_descptr
 
 
-	List_insert(&sem, sem->descriptors.last, sem_descptr);  //Aggiungo alla ListHead Descriptors di sem il descrittore ptr.
+	List_insert(&sem->descriptors, sem->descriptors.last,(ListItem*) sem_descptr);  //Aggiungo alla ListHead Descriptors di sem il descrittore ptr.
 
 
 
