@@ -319,7 +319,7 @@ int disastrOS_semopen(int id, int value) {
   return disastrOS_syscall(DSOS_CALL_SEMOPEN, id, value);
 }
 
-int disastrOS_semclose(int id) /*
+int disastrOS_semclose(int id) {/*
 syscall_vector[DSOS_CALL_SEMCLOSE]      = internal_semClose;
 syscall_numarg[DSOS_CALL_SEMCLOSE]      = 1;*/
 
