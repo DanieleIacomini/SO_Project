@@ -4,16 +4,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "disastrOS_globals.h" //Mi serve per la lista dei semafori
+
 #include "disastrOS.h"
 
 #define BUFFER_SIZE 10
 #define MAX_TRANSACTION     1000
+#define CICLES 5
 
-int transactions[BUFFER_SIZE];
+
+int num[BUFFER_SIZE];
 
 
 int read_index,write_index;
-int sem;
+//int sem; da capire se é utile
+int total;
+
+
 
 static inline int performRandomTransaction() {
 
@@ -29,37 +36,75 @@ static inline int performRandomTransaction() {
 
 
 void producer(int prod,int cons){
-   // for (int i = 0; i < CICLES; i++){
-   while(1){
+	
+    for (int i = 0; i < CICLES; i++){
+
 	   
 	   int numero = performRandomTransaction();
-	   
+	   printf("STO PER FARE SEMWAIT(prod)\n\n");
         disastrOS_semwait(prod);
-        disastrOS_semwait(sem);
+        //disastrOS_semwait(sem);
         
-        transactions[write_index] = numero;
+        printf("Controllo prima di produrre dopo le wait\n\n");
+        
+       // printf("semaforo prod sta a ---> %d", prod->count); NON FUNZIONA VA CREATO UN SEMAFORO APPOSITO PER STAMPARE
+         disastrOS_printStatus();
+        printf("Il processo %d", disastrOS_getpid());
+        printf(" ha prodotto la risorsa %d\n\n",numero);
+        num[write_index] = numero;   
         write_index = (write_index + 1) % BUFFER_SIZE;
+        printf("NewWriteindex %d\n",write_index);
+         
         printf("PRODUCED\n");
         
-        disastrOS_sempost(sem);
+         disastrOS_printStatus();
+        
+        //disastrOS_sempost(sem);
+        printf("STO PER FARE SEMPOST(cons)\n\n");
         disastrOS_sempost(cons);
-    }
+        
+        printf("Controllo dopo la post dopo aver prodotto\n\n");
+         disastrOS_printStatus();
+   
+}
+
 }
 
 void consumer(int prod,int cons){
-    //for (int i = 0; i < CICLES; i++){
-    while(1){
+	
+	disastrOS_sleep(40);
+	
+    for (int i = 0; i < CICLES; i++){
+		printf("STO PER FARE SEMWAIT(cons)");
         disastrOS_semwait(cons);
-        disastrOS_semwait(sem);
+        //disastrOS_semwait(sem);
         
-        //int lastTransaction = transactions[read_index];
-        //transactions[read_index] = 0
+         printf("Controllo prima di consumare la risorsa\n\n");
+         
+         disastrOS_printStatus();
         
+        int lastnum = num[read_index];
+        total+=lastnum;
+        num[read_index] = 0;
+         printf("Il processo che sta per consumare la risorsa ha pid %d\n", disastrOS_getpid());
         read_index = (read_index + 1) % BUFFER_SIZE;
-        printf("CONSUMED\n");
+         printf("NewReadIndex %d\n",read_index);
+       
         
-        disastrOS_sempost(sem);
+         printf("CONSUMED\n");
+        printf("La somma totale delle operazioni è: %d.\n", total);
+        
+       
+        //disastrOS_sempost(sem);
+        printf("STO PER FARE SEMPOST(prod)\n\n");
         disastrOS_sempost(prod);
+        
+         printf("Controllo dopo la post dopo aver consumato la risorsa\n\n");
+        disastrOS_printStatus();
+        
+         
+        
+        
     }
 }
 
@@ -69,7 +114,7 @@ void sleeperFunction(void* args){
   printf("Hello, I am the sleeper, and I sleep %d\n",disastrOS_getpid());
   while(1) {
     getc(stdin);
-    disastrOS_printStatus();
+    //disastrOS_printStatus();
   }
 }
 
@@ -81,6 +126,8 @@ void childFunction(void* args){
   int fd=disastrOS_openResource(disastrOS_getpid(),type,mode);
   printf("fd=%d\n", fd);
   
+  
+  
   //!Parte aggiunta da noi !
 
   
@@ -91,13 +138,13 @@ void childFunction(void* args){
   
   int prod = disastrOS_semopen(2,BUFFER_SIZE);
   
-  sem = disastrOS_semopen(3,1);
+  //sem = disastrOS_semopen(3,1);
   
-  disastrOS_printStatus();
+  //disastrOS_printStatus();
   
-  /*
-   printf("********WAITING SOME SECS BEFORE PRODUCING********\n");
-  disastrOS_sleep(20);
+
+   printf("********WAITING SOME SECS BEFORE PRODUCING********\n\n\n");
+  disastrOS_sleep(80);
   
   
   
@@ -109,24 +156,27 @@ void childFunction(void* args){
   if (disastrOS_getpid() == 4){
       consumer(prod, cons);
   }
-  * 
-  * */
+ 
+ 
   printf("PID: %d, terminating\n", disastrOS_getpid());
 
   
   
   //disastrOS_printStatus();
   
-   printf("PID: %d, terminating\n", disastrOS_getpid());
-  
-  printf("********CLOSING SEMAPHORES********\n");
+   printf("PID: %d, terminating\n", disastrOS_getpid()); 
+   printf("********CLOSING SEMAPHORES********\n\n\n\n");
   
   disastrOS_semclose(prod);
   disastrOS_semclose(cons);
+  //disastrOS_semclose(sem);
   
   
   
   //! Fine della parte aggiunta da noi !
+  
+  
+  
   
  
 /*
@@ -140,14 +190,14 @@ void childFunction(void* args){
 
 
 void initFunction(void* args) {
-  disastrOS_printStatus();
+  //disastrOS_printStatus();
   printf("hello, I am init and I just started\n");
  
   disastrOS_spawn(sleeperFunction, 0);
   
   printf("I feel like to spawn 4 nice threads\n");
   int alive_children=0;
-  for (int i=0; i<4; ++i) { 	//DIMINUITO NUM. PROCESSI
+  for (int i=0; i<5; ++i) { 	//DIMINUITO NUM. PROCESSI
     int type=0;
     int mode=DSOS_CREATE;
     printf("mode: %d\n", mode);
@@ -158,18 +208,18 @@ void initFunction(void* args) {
     alive_children++;
   }
 
-  disastrOS_printStatus();
+  //disastrOS_printStatus();
   int retval;
   int pid;
   while(alive_children>0 && (pid=disastrOS_wait(0, &retval))>=0){ 
-    disastrOS_printStatus();
+    //disastrOS_printStatus();
     printf("initFunction, child: %d terminated, retval:%d, alive: %d \n",
 	   pid, retval, alive_children);
     --alive_children;
   }
   
   disastrOS_printStatus();
-  printf("shutdown!");
+  printf("SHUTDOWN!\n");
   disastrOS_shutdown();
 }
 
@@ -187,6 +237,6 @@ int main(int argc, char** argv){
   disastrOS_start(initFunction, 0, logfilename);
   
   
-  disastrOS_semclose(sem);
+ 
   return 0;
 }
