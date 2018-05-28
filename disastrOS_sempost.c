@@ -32,7 +32,7 @@ void internal_semPost(){
     SemDescriptorPtr* head_wait_descriptor = (SemDescriptorPtr*) List_detach(&(sem->waiting_descriptors), (ListItem*) (sem->waiting_descriptors).first);
 
         PCB* pcb_head = head_wait_descriptor->descriptor->pcb;              //prendo il pcb del processo appena preso
-
+        List_insert(&sem->descriptors, sem->descriptors.last, (ListItem*) head_wait_descriptor);
         List_detach(&waiting_list, (ListItem*) pcb_head);                               //lo rimuovo dalla lista di attesa...
         List_insert(&ready_list, (ListItem*) ready_list.last, (ListItem*) pcb_head);    //...e lo inserisco in quello dei processi ready
 
@@ -46,7 +46,7 @@ void internal_semPost(){
         }
 
   }
-  
+
    running->syscall_retvalue = 0;
-  return; 
+  return;
 }

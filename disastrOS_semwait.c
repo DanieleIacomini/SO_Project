@@ -12,6 +12,7 @@
 
 void internal_semWait(){
   int fd = running -> syscall_args[0];
+
   SemDescriptor* des = SemDescriptorList_byFd(&running -> sem_descriptors,fd);
   if(!des) {
     running -> syscall_retvalue = DSOS_SEMNOTFD;
@@ -35,12 +36,13 @@ void internal_semWait(){
   if(sem -> count < 0) {
     List_detach(&sem -> descriptors,(ListItem*)descptr);
     List_insert(&sem -> waiting_descriptors, sem -> waiting_descriptors.last,(ListItem*)des->ptr);
-    List_insert(&waiting_list,waiting_list.last,(ListItem*)ready_list.first);
+
+    List_insert(&waiting_list, waiting_list.last, (ListItem*) running);
     running -> status = Waiting;  //controllare
     p = (PCB*)List_detach(&ready_list,(ListItem*)ready_list.first);
     running = (PCB*) p;
   }
 
-  running -> syscall_retvalue = 0; 
+  running -> syscall_retvalue = 0;
   return;
 }
