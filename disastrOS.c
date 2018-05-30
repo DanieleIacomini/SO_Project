@@ -52,7 +52,7 @@ void timerInterrupt(){
   if (log_file)
     fprintf(log_file, "TIME: %d\tPID: %d\tACTION: %s\n", disastrOS_time, running->pid, "TIMER_OUT");
   ++disastrOS_time;
-  printf("time: %d\n", disastrOS_time);
+  //printf("time: %d\n", disastrOS_time); Commentato la print del tempo
   internal_schedule();
   if (log_file)
     fprintf(log_file, "TIME: %d\tPID: %d\tACTION: %s\n", disastrOS_time, running->pid, "TIMER_IN");
@@ -147,8 +147,8 @@ void disastrOS_start(void (*f)(void*), void* f_args, char* logfile){
   Resource_init();
   Descriptor_init();
 
-  Semaphore_init();
-  SemDescriptor_init();
+  Semaphore_init();  //PARTE LA FUNZIONE SemaphoreInit().
+  SemDescriptor_init(); ////PARTE LA FUNZIONE SemDesriptorInit().
 
   init_pcb=0;
 
