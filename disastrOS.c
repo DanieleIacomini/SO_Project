@@ -52,7 +52,7 @@ void timerInterrupt(){
   if (log_file)
     fprintf(log_file, "TIME: %d\tPID: %d\tACTION: %s\n", disastrOS_time, running->pid, "TIMER_OUT");
   ++disastrOS_time;
-  //printf("time: %d\n", disastrOS_time); Commentato la print del tempo
+  printf("time: %d\n", disastrOS_time);
   internal_schedule();
   if (log_file)
     fprintf(log_file, "TIME: %d\tPID: %d\tACTION: %s\n", disastrOS_time, running->pid, "TIMER_IN");

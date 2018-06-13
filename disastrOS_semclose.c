@@ -5,9 +5,6 @@
 #include "disastrOS_syscalls.h"
 #include "disastrOS_semaphore.h"
 #include "disastrOS_semdescriptor.h"
-//#include "disastrOS_globals.h"     //aggiungo il file globals.h per le variabili globali , tra le quali semaphores_list
-//#include "disastrOS_constants.h"	//aggiungo il file constants.h per i messaggi di errore
-
 
 
 void internal_semClose(){

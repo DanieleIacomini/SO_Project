@@ -21,25 +21,25 @@ void internal_semWait(){
 
   SemDescriptorPtr* descptr = des -> ptr; //prende Sem_descriptorPtr dal sem_descriptors
   if(!descptr) {
-    running -> syscall_retvalue = DSOS_SEMNOTDESPTR;
+    running -> syscall_retvalue = DSOS_SEMNOTDESPTR;  //controllo errore
     return;
   }
 
   Semaphore* sem = des -> semaphore; //prende semaforo dal SemDescriptor
   if(!sem) {
-    running -> syscall_retvalue = DSOS_SEMNOTSEM;
+    running -> syscall_retvalue = DSOS_SEMNOTSEM;   //controllo errore
     return;
   }
 
   PCB* p;
   sem -> count = (sem -> count -1); //decrementa semaforo (wait)
   if(sem -> count < 0) {
-    List_detach(&sem -> descriptors,(ListItem*)descptr);
-    List_insert(&sem -> waiting_descriptors, sem -> waiting_descriptors.last,(ListItem*)des->ptr);
+    List_detach(&sem -> descriptors,(ListItem*)descptr);   //tolgo il descptr dalla lista dei descrittori del semaforo
+    List_insert(&sem -> waiting_descriptors, sem -> waiting_descriptors.last,(ListItem*)descptr);  //lo stesso lo inserisco nei waiting descriptors
 
-    List_insert(&waiting_list, waiting_list.last, (ListItem*) running);
+    List_insert(&waiting_list, waiting_list.last, (ListItem*) running);  //aggiungo il processo corrente nella lista dei waiting
     running -> status = Waiting;  //controllare
-    p = (PCB*)List_detach(&ready_list,(ListItem*)ready_list.first);
+    p = (PCB*)List_detach(&ready_list,(ListItem*)ready_list.first);   //prendo il primo pcb dalla lista dei ready e lo assegno a running
     running = (PCB*) p;
   }
 
