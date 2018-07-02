@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 #include "disastrOS_globals.h"
-
 #include "disastrOS.h"
+
 
 #define BUFFER_SIZE 2
 #define MAX_TRANSACTION     1000
@@ -36,6 +36,7 @@ static inline int performRandomTransaction() {
 
 void producer(int prod,int cons){
 
+
     for (int i = 0; i < CICLES; i++){
 
 
@@ -44,23 +45,30 @@ void producer(int prod,int cons){
 
         printf("\n\n\n\n\n\n");
 
-        printf("-----STA PER INIZIARE UN NUOVO ITER DI PRODUZIONE-----\n");
+        printf("*****************************************************************************\n\n");
 
-        printf("Processo PRODUTTORE -> Controllo prima di produrre dopo le wait\n\n");
 
-         disastrOS_printStatus();
+        printf("-----STA PER INIZIARE UN NUOVO ITER DI PRODUZIONE-----\n\n");
+
+        //printf("Processo PRODUTTORE -> Controllo prima di produrre dopo le wait\n\n");
+
+         //disastrOS_printStatus();
 
         num[write_index] = numero;
         write_index = (write_index + 1) % BUFFER_SIZE;
 
         printf("-----PRODUCED-----\n");
-         printf("NewWriteindex %d\n",write_index);
+        //printf("NewWriteindex %d\n",write_index);
         printf("Il processo %d", disastrOS_getpid());
         printf(" ha prodotto la risorsa %d\n\n",numero);
 
+
+
         disastrOS_sempost(cons);
 
-        printf("-----FINITO ITER DI PRODUZIONE-----\n");
+        printf("-----FINITO ITER DI PRODUZIONE-----\n\n");
+        printf("*****************************************************************************\n\n");
+
 }
 
 }
@@ -68,32 +76,42 @@ void producer(int prod,int cons){
 void consumer(int prod,int cons){
 
 	//disastrOS_sleep(20);
+  //disastrOS_printStatus();
+
 
     for (int i = 0; i < CICLES; i++){
         disastrOS_semwait(cons);
 
         printf("\n\n\n\n\n\n");
 
-        printf("-----STA PER INIZIARE UN NUOVO ITER DI CONSUMO-----\n");
+        printf("*****************************************************************************\n\n");
 
-         printf("Processo CONSUMATORE -> Controllo prima di consumare la risorsa dopo la wait\n\n");
 
-         disastrOS_printStatus();
+        printf("-----STA PER INIZIARE UN NUOVO ITER DI CONSUMO-----\n\n");
+
+         //printf("Processo CONSUMATORE -> Controllo prima di consumare la risorsa dopo la wait\n\n");
+
 
         int lastnum = num[read_index];
         total+=lastnum;
         num[read_index] = 0;
-         printf("Il processo che sta per consumare la risorsa ha pid %d\n", disastrOS_getpid());
+        //printf("Il processo che sta per consumare la risorsa ha pid %d\n", disastrOS_getpid());
         read_index = (read_index + 1) % BUFFER_SIZE;
-         printf("NewReadIndex %d\n",read_index);
+        //printf("NewReadIndex %d\n",read_index);
 
 
          printf("-----CONSUMED-----\n");
         printf("La somma totale delle operazioni è: %d.\n\n", total);
 
+
+
+
         disastrOS_sempost(prod);
 
-        printf("-----FINITO ITER DI CONSUMO-----\n");
+        printf("-----FINITO ITER DI CONSUMO-----\n\n");
+
+        printf("*****************************************************************************\n\n");
+
       }
 }
 
@@ -131,7 +149,7 @@ void childFunction(void* args){
 
   int prod = disastrOS_semopen(2,BUFFER_SIZE);
 
-  //disastrOS_printStatus();
+  disastrOS_printStatus();
 
   if (disastrOS_getpid() == 2) {
 
@@ -150,7 +168,7 @@ void childFunction(void* args){
 
   //disastrOS_printStatus();
 
-   printf("PID: %d, terminating\n", disastrOS_getpid());
+   printf("\nPID: %d, terminating\n", disastrOS_getpid());
 
 
 printf("-----CHIUDIAMO I SEMAFORI DEL PROCESSO %d-----\n\n\n\n",disastrOS_getpid());
@@ -199,8 +217,8 @@ void initFunction(void* args) {
   int pid;
   while(alive_children>0 && (pid=disastrOS_wait(0, &retval))>=0){
     //disastrOS_printStatus();
-    printf("initFunction, child: %d terminated, retval:%d, alive: %d \n",
-	   pid, retval, alive_children);
+    //printf("initFunction, child: %d terminated, retval:%d, alive: %d \n",
+	  // pid, retval, alive_children);
     --alive_children;
   }
 /*int i;
